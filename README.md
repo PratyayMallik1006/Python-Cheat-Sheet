@@ -486,5 +486,262 @@ To list all attributes and methods of a module
 ```py
 from animals import mamals
 print(dir(mamals))
- 
+```
+
+# Python Standard Libraries
+## Random Values
+```py
+import random
+
+print(random.random()*10) #1 t0 10
+print(random.randint(1,10))
+print(random.choice([1,2,3,4]) #one random value from list
+
+#suffling
+num =[1,2,3,4]
+random.shuffle(numbers)
+
+#k length list random values from the string
+print(random.choices([1,2,3,4],k=2) #[1,2]
+
+#password generator
+print("".join(random.choices("ABCDEFGHI",k=4)))
+import string
+sample_space=strings.ascii_letters + string.digits
+print("".join(random.choices(sample_space,k=4)))
+
+#comma seperated
+print(",".join(random.choices("ABCDEFGHI",k=4))) #A,B,C
+```
+## Timestamps
+```py
+import time
+
+start = time.time()
+some_function()
+end = time.time()
+
+duration = end - start
+print(duration)
+```
+## Datetime
+```py
+from datetime import datetime
+import time
+
+dt = datetime(2023,1,1)
+dt = datetime.now()
+
+#String to datetime
+dt = datetime.strptime("2023/01/01", "%Y/%m/%d")
+
+dt = datetime.fromtimestamp(time.time())
+print(dt)
+
+#formating
+print(f"{dt.year}/{dt.month}")
+print(dt.strftime("%Y/%m"))
+```
+
+## Time Delta
+Duration
+```py
+from datetime import datetime, timedelta
+
+dt1 = datetime(2023,1,1)
+dt2 = datetime.now()
+
+duration = dt2 - dt1
+print(duration)
+print("days",duration.days)
+print("seconds",duration.seconds)
+print("totla_seconds",duration.total_seconds())
+
+dt1 = datetime(2023,1,1) + timedelta(days=1, seconds=2)
+```
+
+
+## Path
+```py
+from pathlib import Path
+
+Path("C:\\Projects\\Python")
+
+#raw string
+Path(r"C:\Project\Python")
+
+#Current Folder
+Path()
+
+#relative path
+Path("animals/__init__.py")
+Path()/"animals"/"__init__.py"
+```
+## Directories
+```py
+path=Path("animals/__init__.py")
+path.mkdir()
+path.rmdir()
+
+#list all files and folders
+for p in path.iterdir():
+	print(p)
+
+folders=[p for p in path.itedir() if p.is_dir()]
+txt_files=[p for p in path.rglob("*.txt)]
+```
+
+## Files
+```py
+path=Path("animals/__init__.py")
+path.rename("init.txt")
+text_str=path.read_text()
+path.write_text("abcd")
+
+#moving files
+import shutil
+
+source = Path("animals/__init__.py")
+target = Path("birdss/__int__.py")
+shutil.copy(source,target)
+```
+## Zip Files
+```py
+from pathlib import Path
+from zipfile import ZipFile
+
+#Creating New zip File
+zip = ZipFile("files.zip","w")
+for path in Path("animals").rglob("*.*"):
+	zip.write(path)
+zip.close()
+
+#Reading from Zip File
+with ZipFile("files.zip") as zip:
+	print(zip.namelist())
+	info = zip.getinfo("animals/__init__.py")
+	print(info.file_size)
+	print(info.compress_size)
+	#Extracting
+	zip.extractall("New_Folder")
+#"with" syntax doesnot requires close()
+```
+
+## CSV Files
+Comma Separated value
+```py
+import csv
+
+#creating CSV File
+file = open("data.csv","w")
+writer = csv.write(file)
+writer.writerow(["cust_id","prod_id","price"])
+writer.writerow([1,11,100])
+writer.writerow([2,12,100])
+file.close()
+
+#reading CSV File
+file = open("data.csv","r")
+reader = CSV.read(file)
+#print(list(reader))
+for row in reader:
+	print(row)
+```
+
+## JSON Files
+```py
+import json
+from pathlib import Path
+students=[
+	{"id":1,"name":"abc"},
+	{"id":2,"name":"def"}
+]
+data = json.dumps(students)
+print(data)
+
+#Creating JSON File
+Path("students.json").write_text(data)
+
+#Reading JSON File
+info = Path("students.json").read_text()
+```
+
+## SQLite Databse
+```py
+import sqlite
+import json
+from pathlib import Path
+
+students = json.load(("students.json").read_text())
+
+#Writing into a Databse
+conn = sqlite3.conncet("db.sqlite3") #Database Name 
+command = "INSERT INTO students VALUES(?,?)"
+for student in students:
+	conn.execute(command, tuple(student.value()))
+conn.commit()
+conn.close()
+
+#Reading from a Database
+with sqlite3.conncet("db.sqlite3") as conn:
+	command = "SELECT * FROM students"
+	cursor = conn.execute(command)
+	#for row in cursor:
+	#	print(row)
+	students = list(cursor.fetchall())
+```
+
+## Browser
+```py
+import webbrowser
+webbrowser.open("google.co.in")
+```
+## Template
+1. template.html
+```html
+<html>
+<body>
+Hello $name, How are you?
+</body>
+</html>
+```
+2. main.py
+```py
+from pathlib import Path
+from string import Template
+
+template = Template(Path("template.html"),read_text())
+body = template.substitute({"name":"Lewis"})
+```
+
+## Emails
+- MIME - Multipurpose Internet Mail Extensions
+- TLS - Transport Layer Security
+```py
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+from pathlib import Path
+from string import Template
+
+template = Template(Path("template.html"),read_text())
+body = template.substitute({"name":"Lewis"})
+
+message = MIMEMultipart()
+message["from"] = "Lewis Hamilton"
+message["to"] = "f1@ferrari.com"
+message["subject"] = "Yes"
+#message.attach(MIMEText("Body","plain"))
+message.attach(MIMEText(body,"html"))
+#Image Attachment
+message.attach(MIMEImage(Path("Photo.jpg").read_bytes()))
+
+smtp = smtp.SMTP(host="smtp.gmail.com", port=587)
+smtp.ehlo()
+smtp.starttls()
+smtp.login("lewis44@mercedes.com","MyPassword")
+smtp.send_messages(message)
+print("Sent...")
+smtp.close()
 ```
