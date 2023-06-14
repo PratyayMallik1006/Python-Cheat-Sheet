@@ -941,5 +941,5 @@ for  row  in  range(1, sheet.max_row+1):
 
 #adding row at end
 sheet.append([1,2,3])
-wb.save("new_data.xlxs")
+wb.save("new_data.xlsx")
 ```
