@@ -448,3 +448,43 @@ point = Point(x=1, y=2)
 other = Point(x=1,y=2)
 print(point == other) #True
 ```
+# Modules (Packages)
+Python file of highly related code, that can be imported
+1. mamals.py
+```py
+def eat():
+	pass
+def walk():
+	pass
+```
+2. Main.py
+```py
+from mamals import eat, walk
+import birds
+
+eat()
+walk()
+
+birds.fly()
+```
+## Compiled Python Files
+Upon importing module, python saves compiled file in folder "\_\_pycache__" to speed up module loading
+
+## Importing from other directories
+1. animal(folder):
+- mamals.py
+- \_\_init__.py (no code required)
+2. Main(folder)
+- main.py
+```py
+import animals.mamals
+from animals.mamals import walk
+from animals import mamals
+```
+## dir Function
+To list all attributes and methods of a module
+```py
+from animals import mamals
+print(dir(mamals))
+ 
+```
