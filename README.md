@@ -745,3 +745,201 @@ smtp.send_messages(message)
 print("Sent...")
 smtp.close()
 ```
+# Python Package Index (Pypi)
+Know more: https://pypi.org/
+## pip
+To install packages from pypi
+```
+pip install numpy
+pip install --upgrade
+pip list
+```
+## Virtual Environment
+- An Environment with custom packages, without interfering with global packages
+- Creating environment(folder) with the name "env"
+```
+python -m venv env
+env\bin\activate.bat
+deactivate
+```
+Or
+### pipenv
+```
+pip install pipenv
+pipenv install numpy
+pipenv --venv
+exit
+```
+## Pydoc
+- Checking Package Documentations 
+```
+pydoc pathlib
+```
+- Converting Documentation into html file
+```
+pydoc pathlib.Path
+```
+- Web View of all documentation in "localhost:8000"
+```
+pydoc -p 8000
+```
+# Python Packages
+
+## API
+1. CMD
+```
+pip install requests
+```
+2. config.py
+```py
+api_key="api_key_123"
+```
+3. main.py
+```py
+import requests
+import config
+
+url = "http://api.com/search"
+api_key="api_key_123"
+headers = {
+	"Authorization":"Bearer "+ config.api_key
+}
+params={
+	city="Ooty"
+}
+response = requests.get(url, headers=headers, params)
+print(response)
+print(response.json()["temp"])
+
+conditions = response.json()["temp"]
+storms =[conditions["weather"] for condition in conditions if condition["weather"]=="storm"]
+```
+## Twilio to Send Message
+Has wrapper above API, as package
+1. CMD
+```
+pip install twilio
+```
+2. main.py
+```py
+from twilio.rest import Client
+
+account_sid="abcd"
+auth_token="acb"
+
+client = Client(account_sid,auth_token)
+client.message.create(
+	to"9876543210",
+	from="1234567890" #Available in twilio account
+	body="hello!"
+)
+#client.call()
+#client.chat()
+```
+## Web Scraping
+1. CMD
+```
+pip install beautifulsoup4
+```
+2. Main.py
+```py
+import  requests
+from  bs4  import  BeautifulSoup
+
+response = requests.get("https://stackoverflow.com/questions?sort=MostVotes&edited=true")
+soup = BeautifulSoup(response.text, "html.parser")
+
+# class name selected
+questions = soup.select(".s-post-summary")
+
+for  question  in  questions:
+	print(question.select_one(".s-link").get_text())
+	print("Votes:")
+	print(question.select_one(".s-post-summary--stats-item-number").get_text())
+	print("------")
+
+# print(questions[0].attrs)
+# {'class': ['s-post-summary--content-excerpt']}
+```
+## Browser Automation
+### Selenium (testing)
+1. CMD
+```
+pip install selenium
+```
+2. Install Webdrive
+goto: https://pypi.org/project/selenium/
+
+3. Main.py
+```py
+from selenium inport webdriver
+
+browser = webdriver.Chrome()
+browser.get("https://github.com")
+
+#clicking on signin link
+signin_link = browser.find_element_by_link_text("Sign in")
+signin_link.click()
+
+#inputting username and password
+username_box = browser.find_element_by_id("login_field")
+username_box.send_keys("lewis44")
+password_box = browser.find_element_by_id("password")
+password_box.send_keys("myPassword")
+password_box.submit()
+
+#confirming if loged into right account
+assert "lewis44" in browser.page_source
+
+profile_link = browser.find_element_by_class("user-profile_link")
+link_label = profile_link.get_attribute("innerHTML")
+assert "lewis44" in link_label
+
+browser.quit()
+```
+## Working with PDFs
+Know more: https://pypi.org/project/PyPDF2/
+```py
+import  PyPDF2
+
+# read binary
+with  open("resume.pdf", "rb") as  file:
+	reader = PyPDF2.PdfReader(file)
+	print(len(reader.pages))
+	page = reader.pages[0]
+	page.rotate(90)
+	writer = PyPDF2.PdfWriter()
+	writer.add_page(page)
+	# write binary
+	with  open("rotated.pdf", "wb") as  output:
+		writer.write(output)
+```
+## Working with Excel
+```py
+import  openpyxl
+
+# workbook
+wb = openpyxl.load_workbook("data.xlsx")
+print(wb.sheetnames)
+
+# wb.create_sheet("Sheet2",0) #index will put before Sheet1
+# wb.remove_sheet(sheet)
+
+sheet = wb["Sheet1"]
+print(sheet.cell(row=1, column=1).value)
+cell = sheet["a1"]
+column=sheet["a"]
+columns=sheet["a:c"]
+matrix=sheet["a1:c3"]
+row=sheet[1]
+rows=sheet[1:3]
+
+for  row  in  range(1, sheet.max_row+1):
+	for  column  in  range(1, sheet.max_column+1):
+		cell = sheet.cell(row, column)
+		print(cell.value)
+
+#adding row at end
+sheet.append([1,2,3])
+wb.save("new_data.xlxs")
+```
